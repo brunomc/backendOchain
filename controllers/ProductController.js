@@ -63,19 +63,6 @@ exports.updateProductTracker = function(idProduct,trackerProgress,callback){
 };
 
 
-exports.delete = function(callback){
-   
-	Product.remove(function(error){
-	 	if(!error){
-	 		callback([]);
-	 		console.log("DB Clean!");
-	 	}else{
-	 		callback({resposta:"Não foi possivel limpar o DB"});
-	 	}
-	 });
-
-}
-
 exports.list = function(callback){
 	
 	var arrayOfProducts =[];
@@ -92,6 +79,22 @@ exports.list = function(callback){
 	}
 	
 	callback(arrayOfProducts);
+
+
+};
+exports.getProductById = function(id,callback){
+	
+		var data = ProductContract.getProduct(id);
+		var jsonObjProduct = {
+			id: data[0],
+			nameProduct: data[1],
+			dateFabrication: data[2],
+			manufacturer: data[3],
+			tracker: data[4]
+
+		};
+				
+		callback(jsonObjProduct);
 
 
 };

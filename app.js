@@ -22,6 +22,14 @@ app.get('/api/data/products',function(req,res){
 	});
 
 });
+app.get('/api/data/product/:id',function(req,res){
+	
+	productController.getProductById(req.params.id, function(resp){
+
+		res.json(resp);
+	});
+
+});
 
 app.post('/api/data/product', function(req,res){
 
