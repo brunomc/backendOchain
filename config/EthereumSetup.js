@@ -1,5 +1,7 @@
 var Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+//const web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/BUYxMOgW9MGsKcg8rkeq"));
+const web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/BUYxMOgW9MGsKcg8rkeq"));
+
 let TrackerProductABI = 
 [
   {
@@ -29,10 +31,37 @@ let TrackerProductABI =
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_ind",
+        "type": "uint256"
+      },
+      {
+        "name": "_trackerProgress",
+        "type": "string"
+      }
+    ],
+    "name": "updateTracker",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "constant": true,
-    "inputs": [],
+    "inputs": [
+      {
+        "name": "ind",
+        "type": "uint256"
+      }
+    ],
     "name": "getProduct",
     "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
       {
         "name": "",
         "type": "string"
@@ -49,13 +78,59 @@ let TrackerProductABI =
         "name": "",
         "type": "string"
       }
-      
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getProductCount",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "productId",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "productSetters",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
     ],
     "payable": false,
     "stateMutability": "view",
     "type": "function"
   }
 ]
-let trackerProductAddressContract = '0x9e0226b77af53d285743fb0501f4df509d160e46';
+let trackerProductAddressContract = '0x3df6e62b65e685f0535bce423111717acc891579';
 const ProductContract = web3.eth.contract(TrackerProductABI).at(trackerProductAddressContract);
 module.exports= ProductContract;

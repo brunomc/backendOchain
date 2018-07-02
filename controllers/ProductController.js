@@ -1,15 +1,40 @@
+const Web3 = require('web3') ;
+const web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/BUYxMOgW9MGsKcg8rkeq"));
+EthereumTx = require('ethereumjs-tx');
+var coder = require('web3/lib/solidity/coder');  
+var CryptoJS = require('crypto-js');
+//private key gerada a partir das 12 palavras chaves privadas da carteira
+const privateKey = Buffer.from('a2d9a9cc454b3b8793ac10b1bab2cbbd04d2baab4720a759fe5a3228a802743b', 'hex');
+//var mnemonic = "pepper athlete brand party proud cabin federal often despair regret corn artefact";
+ 
+
 var ProductContract = require('../config/EthereumSetup.js');
 var Product = require('../models/Product');
+var account = "0xe0e702bbe5af4e664db9589100c2e6711a34263c";
+var addressContract = "0x3df6e62b65e685f0535bce423111717acc891579";
 
 exports.save = function(nameProduct,productionDate,manufacturer,trackerProgress,callback){
-	
-	var  result = ProductContract.registerProduct(
-		nameProduct,
-		productionDate,
-		manufacturer,
-		trackerProgress,{from:'0x106807d5c1bc1e3d9D2f4Ed219643322b2da6669'});
-	console.log(result);
-	
+	var functionName = 'registerProduct'; 
+	var types = ['string','string','string','string']; 
+	var args = [nameProduct, productionDate, manufacturer, trackerProgress]; 
+	var fullName = functionName + '(' + types.join() + ')';  
+	var signature = CryptoJS.SHA3(fullName,{outputLength:256}).toString(CryptoJS.enc.Hex).slice(0, 8);
+	var dataHex = signature + coder.encodeParams(types, args);
+	var data = '0x'+dataHex;
+	var nonce = web3.toHex(web3.eth.getTransactionCount(account))  ;
+	var gasPrice = web3.toHex(web3.eth.gasPrice) ; 
+	var gasLimitHex = web3.toHex(300000); 
+	var rawTx = { 'nonce': nonce, 'gasPrice': gasPrice, 'gasLimit': gasLimitHex, 'from': account, 'to': addressContract, 'data': data, 'chainId':4} ; 
+	var tx = new EthereumTx(rawTx) ;
+	tx.sign(privateKey);
+	var serializedTx = '0x'+tx.serialize().toString('hex') ;
+	web3.eth.sendRawTransaction(serializedTx, function(err, txHash){
+		if(err){
+			callback({resposta:"Erro ao inserir dados do Produto no Blockchain"});
+		}
+		
+		callback({resposta:txHash});
+	}); 
 
 };
 
@@ -27,8 +52,22 @@ exports.delete = function(callback){
 }
 
 exports.list = function(callback){
-	var data = ProductContract.getProduct();
-	callback(data);
+	
+	var arrayOfProducts =[];
+	
+	for(var i=0;i<=ProductContract.getProductCount()-1;i++){
+		var data = ProductContract.getProduct(i);
+		var jsonObjProduct = {};
+		jsonObjProduct["id"] = data[0];
+		jsonObjProduct["nameProduct"] = data[1];
+		jsonObjProduct["dateFabrication"] = data[2];
+		jsonObjProduct["manufacturer"] = data[3];
+		jsonObjProduct["tracker"] = data[4];
+		arrayOfProducts.push(jsonObjProduct);
+	}
+	
+	callback(arrayOfProducts);
+
 
 };
 

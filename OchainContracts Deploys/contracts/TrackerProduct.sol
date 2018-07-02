@@ -7,8 +7,8 @@ contract TrackerProduct {
   string manufacturer;
   string tracker;
   string trackerProgress;
- 
-  function concat(string _a, string _b) internal pure returns (string) {
+
+ function concat(string _a, string _b) internal pure returns (string) {
         bytes memory bytes_a = bytes(_a);
         bytes memory bytes_b = bytes(_b);
         string memory length_ab = new string(bytes_a.length + bytes_b.length);
@@ -23,11 +23,12 @@ contract TrackerProduct {
      nameProduct = _nameProduct;
      productionDate = _productionDate;
      manufacturer = _manufacturer;
-    tracker = concat(tracker,_trackerProgress);
+     tracker =concat(tracker,_trackerProgress);
+
   
   }
 
-  function getProduct() public constant returns (string,string,string,string){
+  function getProduct() view public returns (string,string,string,string){
     return (nameProduct,productionDate,manufacturer,tracker);
   }
 

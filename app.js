@@ -31,11 +31,11 @@ app.post('/api/data/product', function(req,res){
 	var manufacturer = req.body.manufacturer;
 	var trackerProgress = req.body.trackerProgress;
 					
-	console.log(trackerProgress);
+	
 	
 	productController.save(nameProduct,productionDate,manufacturer,trackerProgress,function(resp){
 		console.log(resp);
-		res.end(resp);
+		res.json(resp);
 
 	});
 
