@@ -27,5 +27,8 @@
     "request": "^2.81.0",
     "truffle-hdwallet-provider": "0.0.5",
     "web3": "^0.14.1"
+  },
+  "scripts": {
+    "start": "node index.js"
   }
 }
