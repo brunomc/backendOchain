@@ -37,6 +37,31 @@ exports.save = function(nameProduct,productionDate,manufacturer,trackerProgress,
 	}); 
 
 };
+exports.updateProductTracker = function(idProduct,trackerProgress,callback){
+	var functionName = 'updateTracker'; 
+	var types = ['uint256','string']; 
+	var args = [idProduct, trackerProgress]; 
+	var fullName = functionName + '(' + types.join() + ')';  
+	var signature = CryptoJS.SHA3(fullName,{outputLength:256}).toString(CryptoJS.enc.Hex).slice(0, 8);
+	var dataHex = signature + coder.encodeParams(types, args);
+	var data = '0x'+dataHex;
+	var nonce = web3.toHex(web3.eth.getTransactionCount(account))  ;
+	var gasPrice = web3.toHex(web3.eth.gasPrice) ; 
+	var gasLimitHex = web3.toHex(300000); 
+	var rawTx = { 'nonce': nonce, 'gasPrice': gasPrice, 'gasLimit': gasLimitHex, 'from': account, 'to': addressContract, 'data': data, 'chainId':4} ; 
+	var tx = new EthereumTx(rawTx) ;
+	tx.sign(privateKey);
+	var serializedTx = '0x'+tx.serialize().toString('hex') ;
+	web3.eth.sendRawTransaction(serializedTx, function(err, txHash){
+		if(err){
+			callback({resposta:"Erro ao atualizar dados tracker do Produto no Blockchain"});
+		}
+		
+		callback({resposta:txHash});
+	}); 
+
+};
+
 
 exports.delete = function(callback){
    

@@ -41,3 +41,18 @@ app.post('/api/data/product', function(req,res){
 
 
 });
+
+app.post('/api/data/product/tracker', function(req,res){
+
+	var idProduct = req.body.idProduct;
+	var trackerProgress = req.body.trackerProgress;
+					
+	
+	
+	productController.updateProductTracker(idProduct,trackerProgress,function(resp){
+		res.json(resp);
+
+	});
+
+
+});
